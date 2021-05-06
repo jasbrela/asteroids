@@ -5,20 +5,22 @@ window.onload = function () {
     // setting up sprites
     const player = new Image(), asteroid = new Image();
     asteroid.src = "images/asteroid.png";
+    player.src = "images/rocket-up.png";
 
     // player position (= start position)
-    let playerX = canvas.width/2, playerY = canvas.height/2;
+    let playerX = canvas.width / 2, playerY = canvas.height / 2;
 
     // asteroid position
     let asteroidX, asteroidY;
 
-    // Counter
+    // counter
     let seconds = 0;
-    let timer = setInterval(Counter, 1000);
+    let timer = setInterval(CheckIfPlayerIsIdle, 1000);
 
     // game
     let timeout = 200;
     let game = setInterval(GameLoop, timeout);
+    let score = 0;
 
     // detect clicks and call MovePlayer()
     window.onkeydown = MovePlayer;
@@ -29,8 +31,10 @@ window.onload = function () {
         WriteStartMessage();
         ControlAsteroid();
         DetectCollisions(asteroidX, asteroidY);
-        SetScore();
         UpdateDifficulty(); // the game gets harder throughout time passes
+        WriteScoreText();
+        score++;
+        console.log(seconds);
     }
 
     function MovePlayer(keycode) {
@@ -39,21 +43,25 @@ window.onload = function () {
             case 37: // LEFT
                 player.src = "images/rocket-left.png";
                 playerX = playerX - 10
+                seconds = 0;
                 break;
             case 87:
             case 38: // UP
                 player.src = "images/rocket-up.png";
                 playerY = playerY - 10;
+                seconds = 0;
                 break;
             case 68:
             case 39: // RIGHT
                 player.src = "images/rocket-right.png";
                 playerX = playerX + 10
+                seconds = 0;
                 break;
             case 83:
             case 40: // DOWN
                 player.src = "images/rocket-down.png";
                 playerY = playerY + 10;
+                seconds = 0;
                 break;
         }
     }
@@ -83,15 +91,19 @@ window.onload = function () {
         ctx.drawImage(asteroid, asteroidX, asteroidY);
     }
 
-    function Counter() {
+    function CheckIfPlayerIsIdle() {
         seconds++;
+        if (seconds > 5) {
+            score -= 10;
+            seconds = 0;
+        }
     }
 
-    function SetScore() {
+    function WriteScoreText() {
         ctx.font = "30px Verdana";
         ctx.fillStyle = "white";
         ctx.textAlign = "right";
-        ctx.fillText("Score: " + seconds, canvas.width/4.9, canvas.height/1.1);
+        ctx.fillText("Score: " + score, canvas.width / 4, canvas.height / 1.1);
     }
 
     function UpdateDifficulty() {
@@ -109,6 +121,6 @@ window.onload = function () {
         ctx.font = "16px Verdana";
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
-        ctx.fillText("Press 'WASD' or 'Arrow Keys' to move", canvas.width/2, canvas.height/1.1);
+        ctx.fillText("Pressione 'WASD' ou 'Setas' para mover", canvas.width / 2, canvas.height / 1.1);
     }
 }
