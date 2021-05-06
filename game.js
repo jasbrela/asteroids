@@ -2,34 +2,37 @@ window.onload = function () {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    const player = new Image();
-    const asteroid = new Image();
+    // setting up sprites
+    const player = new Image(), asteroid = new Image();
     asteroid.src = "images/asteroid.png";
 
-    // player start position (in the middle of the screen)
-    let playerX = 350;
-    let playerY = 150;
+    // player position (= start position)
+    let playerX = 350, playerY = 150;
 
-    let asteroidX;
-    let asteroidY;
+    // asteroid position
+    let asteroidX, asteroidY;
 
-    // updates the game
-    let timeout = 200;
-
+    // counter
     let seconds = 0;
+    let timer = setInterval(counter, 1000);
 
-    let id = setInterval(gameLoop, timeout);
+    // game
+    let timeout = 200;
+    let game = setInterval(gameLoop, timeout);
+
+    // detect clicks and call movePlayer()
+    window.onkeydown = movePlayer;
+
+    // functions
     function gameLoop() {
-        setInterval(counter, 1000);
-        playerMovement(playerX, playerY);
-        asteroidController();
-        collisionsDetector(asteroidX, asteroidY);
+        drawPlayer(playerX, playerY);
+        controlAsteroid();
+        detectCollisions(asteroidX, asteroidY);
+        setScore();
+        updateDifficulty(); // the game gets harder throughout time passes
     }
 
-    // player movement
-    window.onkeydown = onClick;
-
-    function onClick(keycode) {
+    function movePlayer(keycode) {
         switch (keycode.keyCode) {
             case 65:
             case 37: // LEFT
@@ -54,15 +57,15 @@ window.onload = function () {
         }
     }
 
-    function collisionsDetector(asteroidX, asteroidY) {
-        if (((playerX + 32) > asteroidX && playerX < (asteroidX + 32)) &&
-            ((playerY + 32) > asteroidY) && (playerY < (asteroidY + 32))) {
-
-            window.clearInterval(id);
+    function detectCollisions(asteroidX, asteroidY) {
+        if (((playerX + player.width) > asteroidX && playerX < (asteroidX + asteroid.width)) &&
+            ((playerY + player.width) > asteroidY) && (playerY < (asteroidY + asteroid.height))) {
+            window.clearInterval(game);
+            window.clearInterval(timer);
         }
     }
 
-    function playerMovement(x, y) {
+    function drawPlayer(x, y) {
         ctx.clearRect(0, 0, 800, 400);
         ctx.drawImage(player, x, y);
     }
@@ -71,7 +74,7 @@ window.onload = function () {
         return Math.floor(Math.random() * max) + 1;
     }
 
-    function asteroidController() {
+    function controlAsteroid() {
         asteroidX = Randomizer(800);
         asteroidY = Randomizer(400);
         ctx.drawImage(asteroid, asteroidX, asteroidY);
@@ -79,5 +82,16 @@ window.onload = function () {
 
     function counter() {
         seconds++;
+    }
+
+    function setScore() {
+        ctx.font = "30px Verdana";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "right";
+        ctx.fillText("Score: " + seconds, canvas.width/5.3, canvas.height/1.1);
+    }
+
+    function updateDifficulty() {
+        timeout -= seconds * 0.05;
     }
 }
