@@ -15,26 +15,25 @@ window.onload = function () {
 
     // counter
     let seconds = 0;
-    let timer = setInterval(CheckIfPlayerIsIdle, 1000);
+    let timer = setInterval(ChangeScore, 1000);
 
     // game
+    let score = 0;
     let timeout = 200;
     let game = setInterval(GameLoop, timeout);
-    let score = 0;
 
     // detect clicks and call MovePlayer()
     window.onkeydown = MovePlayer;
 
     // functions
     function GameLoop() {
+        CheckForBoundaries();
         DrawPlayer(playerX, playerY);
         WriteStartMessage();
         ControlAsteroid();
         DetectCollisions(asteroidX, asteroidY);
-        UpdateDifficulty(); // the game gets harder throughout time passes
+        UpdateDifficulty();
         WriteScoreText();
-        score++;
-        console.log(seconds);
     }
 
     function MovePlayer(keycode) {
@@ -91,6 +90,11 @@ window.onload = function () {
         ctx.drawImage(asteroid, asteroidX, asteroidY);
     }
 
+    function ChangeScore() {
+        score++ // to update score every second, as a timer
+        CheckIfPlayerIsIdle();
+    }
+
     function CheckIfPlayerIsIdle() {
         seconds++;
         if (seconds > 5) {
@@ -122,5 +126,19 @@ window.onload = function () {
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
         ctx.fillText("Pressione 'WASD' ou 'Setas' para mover", canvas.width / 2, canvas.height / 1.1);
+    }
+
+    function CheckForBoundaries() {
+        if (playerY > canvas.height - player.height) {
+            playerY = canvas.height - player.height;
+        }
+        else if (playerY < 0) {
+            playerY = 0
+        }
+        else if (playerX > canvas.width - player.width) {
+            playerX = canvas.width - player.width;
+        } else if (playerX < 0) {
+            playerX = 0;
+        }
     }
 }
