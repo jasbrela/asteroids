@@ -12,14 +12,16 @@ window.onload = function () {
 
     // asteroid position
     let asteroidX, asteroidY;
+    let asteroidSpeed = 1000;
+    setTimeout(RandomizePosition, asteroidSpeed);
 
     // counter
     let seconds = 0;
-    let timer = setInterval(ChangeScore, 1000);
+    let timer = setInterval(Timer, 1000);
 
     // game
     let score = 0;
-    let timeout = 200;
+    let timeout = 24;
     let game = setInterval(GameLoop, timeout);
 
     // detect clicks and call MovePlayer()
@@ -27,6 +29,7 @@ window.onload = function () {
 
     // functions
     function GameLoop() {
+        CheckForBoundaries();
         CheckForBoundaries();
         DrawPlayer(playerX, playerY);
         WriteStartMessage();
@@ -84,13 +87,17 @@ window.onload = function () {
         return Math.floor(Math.random() * max) + 1;
     }
 
-    function ControlAsteroid() {
+    function RandomizePosition() {
         asteroidX = Randomizer(800);
         asteroidY = Randomizer(400);
+        setTimeout(RandomizePosition, asteroidSpeed);
+    }
+
+    function ControlAsteroid() {
         ctx.drawImage(asteroid, asteroidX, asteroidY);
     }
 
-    function ChangeScore() {
+    function Timer() {
         score++ // to update score every second, as a timer
         CheckIfPlayerIsIdle();
     }
@@ -111,7 +118,7 @@ window.onload = function () {
     }
 
     function UpdateDifficulty() {
-        timeout -= seconds * 0.05;
+        asteroidSpeed -= seconds * 0.1; // Asteroid gets faster and faster
     }
 
     function WriteGameOverMessage() {
@@ -129,6 +136,7 @@ window.onload = function () {
     }
 
     function CheckForBoundaries() {
+        // PLAYER
         if (playerY > canvas.height - player.height) {
             playerY = canvas.height - player.height;
         }
@@ -137,8 +145,23 @@ window.onload = function () {
         }
         else if (playerX > canvas.width - player.width) {
             playerX = canvas.width - player.width;
-        } else if (playerX < 0) {
+        }
+        else if (playerX < 0) {
             playerX = 0;
+        }
+
+        // ASTEROID
+        if (asteroidY > canvas.height - asteroid.height) {
+            asteroidY = canvas.height - asteroid.height;
+        }
+        else if (asteroidY < 0) {
+            asteroidY = 0
+        }
+        else if (asteroidX > canvas.width - asteroid.width) {
+            asteroidX = canvas.width - asteroid.width;
+        }
+        else if (asteroidX < 0) {
+            asteroidX = 0;
         }
     }
 }
