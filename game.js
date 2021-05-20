@@ -21,7 +21,7 @@ window.onload = function () {
 
     // game
     let score = 0;
-    let timeout = 24;
+    let timeout = 10;
     let game = setInterval(GameLoop, timeout);
 
     // detect clicks and call MovePlayer()
@@ -29,7 +29,6 @@ window.onload = function () {
 
     // functions
     function GameLoop() {
-        CheckForBoundaries();
         CheckForBoundaries();
         DrawPlayer(playerX, playerY);
         WriteStartMessage();
@@ -118,7 +117,7 @@ window.onload = function () {
     }
 
     function UpdateDifficulty() {
-        asteroidSpeed -= seconds * 0.1; // Asteroid gets faster and faster
+        asteroidSpeed -= seconds * 0.25; // Asteroid gets faster and faster
     }
 
     function WriteGameOverMessage() {
