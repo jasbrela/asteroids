@@ -97,7 +97,7 @@ window.onload = function () {
     }
 
     function Timer() {
-        score++ // to update score every second, as a timer
+        score = score + 10 // to update score every second, as a timer
         CheckIfPlayerIsIdle();
     }
 
@@ -117,7 +117,7 @@ window.onload = function () {
     }
 
     function UpdateDifficulty() {
-        asteroidSpeed -= seconds * 0.25; // Asteroid gets faster and faster
+        asteroidSpeed -= score * 0.001; // Asteroid gets faster and faster
     }
 
     function WriteGameOverMessage() {
